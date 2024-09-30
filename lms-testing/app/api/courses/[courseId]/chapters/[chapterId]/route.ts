@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 
+
 export async function DELETE(
     req: Request,
     { params }: { params: { courseId: string; chapterId: string; } }
@@ -61,6 +62,7 @@ export async function DELETE(
       }
 
       return NextResponse.json(deletedChapter);
+      
 
     } catch (error) {
         console.log("[CHAPTER_ID_DELETE]", error);
