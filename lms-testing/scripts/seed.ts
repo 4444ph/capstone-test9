@@ -11,9 +11,7 @@ async function main() {
                 { name: "test3" },
                 { name: "test4" },
                 { name: "test5" },
-                { name: "test6" },
-                { name: "test7" },
-                { name: "test8" },
+                
             ]
         });
 

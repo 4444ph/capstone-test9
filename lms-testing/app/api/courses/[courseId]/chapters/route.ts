@@ -1,24 +1,32 @@
 import { db } from "@/lib/db";
+import { isTeacher } from "@/lib/teacher";
 import { auth } from "@clerk/nextjs/server";
-import { error } from "console";
 import { NextResponse } from "next/server";
 
 export async function POST(
     req: Request,
     { params }: { params: { courseId: string } }
- ) {
+) {
     try {
         const { userId } = auth();
         const { title } = await req.json();
 
         if (!userId) {
-            return new NextResponse("Unauthorized ", { status: 401 });
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (!isTeacher(userId)) {
+            return new NextResponse("Forbidden", { status: 403 });
+        }
+
+        if (!title) {
+            return new NextResponse("Title is required", { status: 400 });
         }
 
         const courseOwner = await db.course.findUnique({
             where: {
                 id: params.courseId,
-                userId: userId,            
+                userId: userId,
             }
         });
 
@@ -45,10 +53,9 @@ export async function POST(
             }
         });
 
-
-      return NextResponse.json(chapter);   
+        return NextResponse.json(chapter);
     } catch (error) {
-        console.log("[CHAPTERS]", error);
-        return new NextResponse("Internal Error", { status: 500 });   
+        console.log("[CHAPTERS_CREATE]", error);
+        return new NextResponse("Internal Error", { status: 500 });
     }
- }
+}

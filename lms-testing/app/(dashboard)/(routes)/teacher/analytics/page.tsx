@@ -1,13 +1,38 @@
-const AnalyticsPage = () => {
+import { getAnalytics } from "@/actions/get-analytics";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { DataCard } from "./_components/data-card";
+import { Chart } from "./_components/chart";
+
+const AnalyticsPage = async () => {
+    const { userId } = auth();
+
+    if (!userId) {
+        return redirect("/");
+    }
+
+    const {
+        data,
+        totalUsers,
+        totalCompleted,
+    } = await getAnalytics(userId);
 
     return (
-
-        <div>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-            Voluptatem rem minima ex cum possimus sint sequi tempora aspernatur molestias corporis nihil, 
-            earum saepe quibusdam nulla odio dicta expedita inventore laudantium!
+        <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <DataCard
+                    label="Total Users"
+                    value={totalUsers}
+                />
+                <DataCard
+                    label="Total Completed"
+                    value={totalCompleted}
+                />
+            </div>
+            <Chart 
+                data={data}
+            />
         </div>
-
     )
 }
 

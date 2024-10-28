@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fulltextSearch"]
 }
 
 datasource db {
@@ -30,6 +31,7 @@ model Course {
   updatedAt   DateTime    @updatedAt
 
   @@index([categoryId])
+  
 }
 
 model Category {
@@ -83,6 +85,7 @@ model MuxData {
 
 model UserProgress {
   id          String   @id @default(uuid())
+  userId      String
 
   chapterId   String
   chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
@@ -91,4 +94,7 @@ model UserProgress {
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@unique([userId, chapterId])
+  @@index([chapterId])
 }
